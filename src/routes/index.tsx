@@ -1,113 +1,100 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useMemo, useState } from 'react'
+import { useDialKit } from 'dialkit'
 import {
   AnimatedCloud,
   DEFAULT_CLOUD_PARAMS,
   type CloudParams,
 } from '#/components/AnimatedCloud'
 
-type RenderMode = CloudParams['renderMode']
-
-const MODES: { id: RenderMode; label: string }[] = [
-  { id: 'filled', label: 'Filled' },
-  { id: 'outline', label: 'Outline' },
-  { id: 'outlineFill', label: 'Outline + Fill' },
-]
-
-const SVG_OUTLINE_DEFAULTS = {
-  fillColor: '#ffffff',
-  innerColor: '#c8c8c8',
-  outerColor: '#ffffff',
-  fillOpacity: 0,
-  innerOpacity: 0.3,
-  outerOpacity: 1,
-  innerWidth: 0.7,
-  outerWidth: 0.7,
-} as const
-
-function getParamsForMode(mode: RenderMode): CloudParams {
-  if (mode === 'filled') {
-    return {
-      ...DEFAULT_CLOUD_PARAMS,
-      renderMode: 'filled',
-      color: '#FFFFFF',
-    }
-  }
-
-  return {
-    ...DEFAULT_CLOUD_PARAMS,
-    renderMode: mode,
-    color: '#FFFFFF',
-    outline: {
-      ...DEFAULT_CLOUD_PARAMS.outline,
-      ...SVG_OUTLINE_DEFAULTS,
-    },
-  }
-}
-
 export const Route = createFileRoute('/')({ component: Home })
 
 function Home() {
-  const [mode, setMode] = useState<RenderMode>('filled')
-  const params = useMemo(() => getParamsForMode(mode), [mode])
-  const isSvgMode = mode === 'outline' || mode === 'outlineFill'
+  const dial = useDialKit('Cloud', {
+    renderMode: {
+      type: 'select',
+      options: [
+        { value: 'filled', label: 'Filled' },
+        { value: 'outline', label: 'Outline' },
+        { value: 'outlineFill', label: 'Outline + Fill' },
+      ],
+      default: DEFAULT_CLOUD_PARAMS.renderMode,
+    },
+    displayScale: [0.55, 0.2, 1, 0.01],
+    blobSize: [DEFAULT_CLOUD_PARAMS.blobSize, 40, 300],
+    blobCount: [DEFAULT_CLOUD_PARAMS.blobCount, 4, 10, 1],
+    orbitRadius: [DEFAULT_CLOUD_PARAMS.orbitRadius, 20, 180],
+    orbitSpeed: [DEFAULT_CLOUD_PARAMS.orbitSpeed, 4, 24],
+    scaleAmplitude: [DEFAULT_CLOUD_PARAMS.scaleAmplitude, 0, 0.3],
+    color: '#FFFFFF',
+    variation: {
+      size: [DEFAULT_CLOUD_PARAMS.variation.size, 0, 1],
+      radius: [DEFAULT_CLOUD_PARAMS.variation.radius, 0, 40],
+      scaleAmplitude: [
+        DEFAULT_CLOUD_PARAMS.variation.scaleAmplitude,
+        0,
+        0.15,
+      ],
+    },
+    radiusOscillation: {
+      amplitude: [DEFAULT_CLOUD_PARAMS.radiusOscillation.amplitude, 0, 80],
+      speed: [DEFAULT_CLOUD_PARAMS.radiusOscillation.speed, 0.5, 12],
+    },
+    outline: {
+      fillColor: '#ffffff',
+      innerColor: '#c8c8c8',
+      outerColor: '#ffffff',
+      fillOpacity: [0, 0, 1, 0.01],
+      innerOpacity: [0.3, 0, 1, 0.01],
+      outerOpacity: [1, 0, 1, 0.01],
+      innerWidth: [0.7, 0.25, 4],
+      outerWidth: [0.7, 0.25, 4],
+    },
+    tail: {
+      blobCount: [DEFAULT_CLOUD_PARAMS.tail.blobCount, 0, 5, 1],
+      blobSize: [DEFAULT_CLOUD_PARAMS.tail.blobSize, 8, 120],
+      scaleAmplitude: [DEFAULT_CLOUD_PARAMS.tail.scaleAmplitude, 0, 0.3],
+      positionAmplitude: [
+        DEFAULT_CLOUD_PARAMS.tail.positionAmplitude,
+        0,
+        24,
+      ],
+      oscillationSpeed: [
+        DEFAULT_CLOUD_PARAMS.tail.oscillationSpeed,
+        0.5,
+        12,
+      ],
+    },
+  }) as CloudParams & { displayScale: number }
+
+  const params: CloudParams = {
+    renderMode: dial.renderMode,
+    blobSize: dial.blobSize,
+    blobCount: dial.blobCount,
+    orbitRadius: dial.orbitRadius,
+    orbitSpeed: dial.orbitSpeed,
+    scaleAmplitude: dial.scaleAmplitude,
+    color: dial.color,
+    variation: dial.variation,
+    radiusOscillation: dial.radiusOscillation,
+    duoMode: DEFAULT_CLOUD_PARAMS.duoMode,
+    outline: dial.outline,
+    tail: {
+      ...DEFAULT_CLOUD_PARAMS.tail,
+      blobCount: dial.tail.blobCount,
+      blobSize: dial.tail.blobSize,
+      scaleAmplitude: dial.tail.scaleAmplitude,
+      positionAmplitude: dial.tail.positionAmplitude,
+      oscillationSpeed: dial.tail.oscillationSpeed,
+    },
+  }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-[#141414] px-8 text-white">
-      <div className="flex w-full max-w-2xl flex-col items-center gap-10">
-        <header className="flex flex-col items-center gap-3 text-center">
-          <p className="m-0 text-sm text-[#7f7f7f]">Code / ChatGPT cloud</p>
-          <h1 className="m-0 text-2xl font-semibold tracking-tight">
-            Cloud Animation
-          </h1>
-          <p className="m-0 max-w-md text-sm text-[#9a9a9a]">
-            Finished version from the{' '}
-            <a
-              href="https://emanuelecodes.com/cloud-tutorial"
-              className="text-white underline underline-offset-4"
-              target="_blank"
-              rel="noreferrer"
-            >
-              tutorial
-            </a>
-            . Switch render modes below.
-          </p>
-        </header>
-
-        <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-2xl border border-[#292929] bg-[#1b1b1b]">
-          <AnimatedCloud
-            params={params}
-            displayScale={0.55}
-            filled={mode === 'outlineFill'}
-          />
-        </div>
-
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {MODES.map((option) => {
-            const isActive = mode === option.id
-            return (
-              <button
-                key={option.id}
-                type="button"
-                onClick={() => setMode(option.id)}
-                className={`rounded-full border px-4 py-2 text-sm transition-colors ${
-                  isActive
-                    ? 'border-white bg-white text-[#141414]'
-                    : 'border-[#3a3a3a] bg-transparent text-[#bdbdbd] hover:border-[#5a5a5a] hover:text-white'
-                }`}
-              >
-                {option.label}
-              </button>
-            )
-          })}
-        </div>
-
-        <p className="m-0 text-center text-xs text-[#666]">
-          {isSvgMode
-            ? 'SVG outline mode — inner stroke + outer halo'
-            : 'DOM filled mode — overlapping circles with tail'}
-        </p>
-      </div>
-    </main>
+    <div className="flex h-screen w-screen items-center justify-center bg-[#141414]">
+      <AnimatedCloud
+        params={params}
+        displayScale={dial.displayScale}
+        filled={dial.renderMode === 'outlineFill'}
+      />
+    </div>
   )
 }
