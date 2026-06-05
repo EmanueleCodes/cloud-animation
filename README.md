@@ -6,10 +6,10 @@ The finished ChatGPT-style cloud animation — compound motion, phase distributi
 
 ## Branches
 
-| Branch | What's inside |
-| --- | --- |
-| **`starter`** | Empty TanStack Start project — clone this to follow the tutorial step by step |
-| **`main`** (this branch) | Complete cloud animation with all render modes |
+| Branch                   | What's inside                                                                 |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| **`starter`**            | Empty TanStack Start project — clone this to follow the tutorial step by step |
+| **`main`** (this branch) | Complete cloud animation with all render modes                                |
 
 Want to build it yourself? Start from the starter branch:
 
@@ -30,8 +30,8 @@ Open [http://localhost:3000](http://localhost:3000) to see the cloud with mode t
 
 ## What's included
 
-- `src/components/AnimatedCloud.tsx` — core cloud component with all animation logic
-- `src/hooks/useIsVisible.ts` — pauses animation when off-screen
+- `src/components/cloud/` — modular cloud animation (types, hooks, utils, render components)
+- `src/hooks/useIsVisible.ts` — viewport observer; pauses animation when off-screen
 - Three render modes: `filled`, `outline`, `outlineFill`
 
 ## Stack
