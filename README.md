@@ -1,6 +1,6 @@
 # Cloud Animation
 
-Starter project for building the ChatGPT-style cloud animation from scratch.
+The finished ChatGPT-style cloud animation — compound motion, phase distribution, tail, and three render modes.
 
 **Read the full tutorial:** [emanuelecodes.com/cloud-tutorial](https://emanuelecodes.com/cloud-tutorial)
 
@@ -8,16 +8,16 @@ Starter project for building the ChatGPT-style cloud animation from scratch.
 
 | Branch | What's inside |
 | --- | --- |
-| **`starter`** (this branch) | Empty TanStack Start project — follow the tutorial and build it yourself |
-| **`main`** | Finished cloud animation with all render modes |
+| **`starter`** | Empty TanStack Start project — clone this to follow the tutorial step by step |
+| **`main`** (this branch) | Complete cloud animation with all render modes |
 
-To see the complete solution:
+Want to build it yourself? Start from the starter branch:
 
 ```bash
-git checkout main
+git clone -b starter https://github.com/EmanueleCodes/cloud-animation.git
 ```
 
-Or download it directly: [main branch zip](https://github.com/EmanueleCodes/cloud-animation/archive/refs/heads/main.zip)
+Or download the starter directly: [starter branch zip](https://github.com/EmanueleCodes/cloud-animation/archive/refs/heads/starter.zip)
 
 ## Quick start
 
@@ -26,7 +26,13 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) and follow along with the tutorial.
+Open [http://localhost:3000](http://localhost:3000) to see the cloud with mode toggles (filled, outline, outline + fill).
+
+## What's included
+
+- `src/components/AnimatedCloud.tsx` — core cloud component with all animation logic
+- `src/hooks/useIsVisible.ts` — pauses animation when off-screen
+- Three render modes: `filled`, `outline`, `outlineFill`
 
 ## Stack
 
